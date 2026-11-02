@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AUTH-40 Notification settings</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230B0D12'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='system-ui' font-size='16' font-weight='700' fill='%23D9B45B'%3EB%3C/text%3E%3C/svg%3E">
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Binder INFRA-4 charcoal+gold. Profile entry + Notification settings + signup/legal marketing checkboxes. */
+:root{
+  --bg:#0B0D12;--bg2:#12151D;--surface:#171B25;--surface2:#1E2330;--line:#2A3040;
+  --text:#EEF1F7;--muted:#8B93A7;--gold:#D9B45B;--gold2:#F0D488;--goldInk:#1A150A;
+  --ok:#4ADE80;--danger:#F87171;--info:#60A5FA;
+  --ui:-apple-system,"SF Pro Text","Segoe UI","Noto Sans Hebrew",Arial,sans-serif;
+  --mono:ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--text);font-family:var(--ui);
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:24px 48px;
+}
+h1{font-size:22px;margin:0 0 4px;text-wrap:balance}
+h2{font-size:15px;color:var(--gold);margin:32px 0 12px;letter-spacing:.04em;text-transform:uppercase}
+.lead,.notes{color:var(--muted);max-width:78ch;line-height:1.55;margin:0 0 8px}
+.lead b,.notes b{color:var(--text)}
+.grid{display:flex;flex-wrap:wrap;gap:20px}
+.cap{font-size:12px;color:var(--muted);margin-bottom:6px;max-width:300px;line-height:1.4}
+.phone{
+  width:300px;max-width:100%;border:1px solid var(--line);border-radius:28px;
+  background:var(--bg);overflow:hidden;position:relative;font-size:13px;
+  display:flex;flex-direction:column;min-height:560px;
+}
+.phone.short{min-height:0}
+.hdr{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 12px;background:var(--bg2);border-bottom:1px solid var(--line);flex:none;
+}
+.hdr b{font-size:15px;flex:1}
+.back{color:var(--gold);font-weight:700;width:28px;text-align:center}
+[dir=rtl] .back{transform:scaleX(-1)}
+.body{padding:14px 14px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
+.t{color:var(--gold);font-size:22px;font-weight:700;text-align:center;margin-top:8px}
+.em{color:var(--muted);font-size:12px;text-align:center;margin-bottom:4px}
+.btn{
+  display:block;text-align:center;padding:11px;border-radius:12px;font-weight:600;font-size:14px;
+  border:1px solid var(--line);background:var(--surface);color:var(--text);
+}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:var(--goldInk)}
+.btn.ghost{background:transparent}
+.btn.dis{opacity:.4}
+.btn.new{outline:2px dashed var(--gold);outline-offset:3px}
+.sec{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:6px}
+.tg{
+  display:flex;align-items:center;gap:12px;justify-content:space-between;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:12px 14px;min-height:48px;
+}
+.tg span{font-weight:600;font-size:14px;flex:1}
+.sw{
+  flex:none;width:46px;height:28px;border-radius:14px;background:var(--surface2);
+  border:1px solid var(--line);position:relative;
+}
+.sw::after{
+  content:"";position:absolute;top:3px;inset-inline-start:3px;width:20px;height:20px;
+  border-radius:50%;background:var(--muted);
+}
+.sw.on{background:var(--gold);border-color:var(--gold)}
+.sw.on::after{inset-inline-start:auto;inset-inline-end:3px;background:var(--bg)}
+.help{font-size:12px;color:var(--muted);line-height:1.45}
+.hint{
+  margin-top:2px;padding:10px 12px;border-radius:12px;
+  background:var(--surface2);border:1px solid var(--line);
+  display:flex;flex-direction:column;gap:8px;font-size:12px;line-height:1.4;
+}
+.hint .lnk{color:var(--gold2);font-weight:600}
+.err{font-size:12px;color:var(--danger)}
+.retry{font-size:13px;color:var(--gold);font-weight:600;text-decoration:underline}
+.offline{font-size:12px;color:var(--muted);background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.spin{width:28px;height:28px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--gold);margin:40px auto 8px}
+.field{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:11px 12px;color:var(--muted)}
+.lbl{font-size:12px;font-weight:600;color:var(--muted)}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.4}
+.box{
+  width:20px;height:20px;border-radius:5px;border:1.5px solid var(--muted);flex:none;
+  display:grid;place-items:center;font-size:12px;color:var(--goldInk);
+}
+.box.on{background:var(--gold);border-color:var(--gold)}
+.lnk{color:var(--gold);text-decoration:underline}
+.doc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.doc small{color:var(--muted);display:block}
+.lang{align-self:flex-end;font-size:12px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;color:var(--muted)}
+[dir=rtl] .lang{align-self:flex-start}
+.tid{font-family:var(--mono);font-size:9px;color:var(--info);opacity:.95}
+.ghosted{opacity:.45}
+.hr{height:1px;background:var(--line);margin:4px 0}
+.del{font-size:12px;color:var(--muted);text-decoration:underline;text-align:center;margin-top:8px}
+.keys{overflow-x:auto;margin-top:8px;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;font-size:13px;min-width:720px;width:100%}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:start;vertical-align:top}
+th{color:var(--muted);font-weight:600;background:var(--bg2)}
+td.key{font-family:var(--mono);font-size:12px;color:var(--gold2);white-space:nowrap}
+ul.notes{max-width:78ch;color:var(--muted);line-height:1.6;padding-inline-start:20px}
+</style>
+</head>
+<body>
+
+<h1>AUTH-40 (#364): Notification settings</h1>
+<p class="lead">Profile secondary entry → one settings screen with <b>Push</b> (3 live CHAT-6 kinds, default on) then <b>Email announcements</b> (opt-in, default off). Signup + Google first-accept get a separate unticked marketing checkbox. Binder INFRA-4. Blue mono = testID, not UI. No staff composer.</p>
+
+<h2>1. Profile entry</h2>
+<div class="grid">
+  <div>
+    <div class="cap"><b>EN</b> — secondary button after Blocked users, before Support. Dashed outline = new affordance only.</div>
+    <div class="phone short">
+      <div class="body" style="align-items:center">
+        <div class="t">Profile</div>
+        <div class="em">dana@example.com</div>
+        <div class="btn ghosted" style="width:100%">Edit profile</div>
+        <div class="btn ghosted" style="width:100%">My groups</div>
+        <div class="btn ghosted" style="width:100%">Blocked users</div>
+        <div class="btn new" style="width:100%" data-testid="profile-notification-settings">Notification settings</div>
+        <span class="tid">profile-notification-settings</span>
+        <div class="btn ghosted" style="width:100%">Support</div>
+        <div class="btn ghosted" style="width:100%">Sign out</div>
+        <div class="sec" style="align-self:stretch">Privacy</div>
+        <div class="tg ghosted" style="width:100%"><span>Share usage analytics</span><div class="sw on"></div></div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="cap"><b>HE · RTL</b> — same slot; label via i18n.</div>
+    <div class="phone short" dir="rtl">
+      <div class="body" style="align-items:center">
+        <div class="t">פרופיל</div>
+        <div class="em">dana@example.com</div>
+        <div class="btn ghosted" style="width:100%">עריכת פרופיל</div>
+        <div class="btn ghosted" style="width:100%">הקבוצות שלי</div>
+        <div class="btn ghosted" style="width:100%">משתמשים חסומים</div>
+        <div class="btn new" style="width:100%">הגדרות התראות</div>
+        <span class="tid">profile-notification-settings</span>
+        <div class="btn ghosted" style="width:100%">תמיכה</div>
+        <div class="btn ghosted" style="width:100%">התנתקות</div>
+        <div class="sec" style="align-self:stretch">פרטיות</div>
+        <div class="tg ghosted" style="width:100%"><span>שיתוף נתוני שימוש</span><div class="sw on"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>2. Notification settings — default (success)</h2>
+<div class="grid">
+  <div>
+    <div class="cap"><b>EN</b> — Push section first (all on), Email second (off). Help under email only. Mirrors AnalyticsToggleSection switch row.</div>
+    <div class="phone" data-testid="notification-settings-screen">
+      <div class="hdr"><span class="back">‹</span><b>Notification settings</b></div>
+      <div class="body">
+        <span class="tid">notification-settings-screen</span>
+        <div class="sec" data-testid="notification-settings-section-push">Push notifications</div>
+        <div class="tg" data-testid="notification-settings-push-chat-message"><span>Direct / deal messages</span><div class="sw on"></div></div>
+        <div class="tg" data-testid="notification-settings-push-deal-step"><span>Deal updates</span><div class="sw on"></div></div>
+        <div class="tg" data-testid="notification-settings-push-post-comment"><span>Comments on my posts</span><div class="sw on"></div></div>
+        <div class="sec" data-testid="notification-settings-section-email">Email announcements</div>
+        <div class="tg" data-testid="notification-settings-email-announcements"><span>Product announcements</span><div class="sw"></div></div>
+        <div class="help">Occasional product news by email. Off by default. You can unsubscribe any time from a message footer.</div>
+        <span class="tid">…-section-push · …-push-chat-message · …-push-deal-step · …-push-post-comment · …-section-email · …-email-announcements</span>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="cap"><b>HE · RTL</b> — switch knob follows end-edge when on.</div>
+    <div class="phone" dir="rtl">
+      <div class="hdr"><span class="back">‹</span><b>הגדרות התראות</b></div>
+      <div class="body">
+        <div class="sec">התראות דחיפה</div>
+        <div class="tg"><span>הודעות ישירות / עסקה</span><div class="sw on"></div></div>
+        <div class="tg"><span>עדכוני עסקה</span><div class="sw on"></div></div>
+        <div class="tg"><span>תגובות על הפוסטים שלי</span><div class="sw on"></div></div>
+        <div class="sec">הודעות באימייל</div>
+        <div class="tg"><span>הודעות מוצר</span><div class="sw"></div></div>
+        <div class="help">חדשות מוצר מדי פעם באימייל. כבוי כברירת מחדל. אפשר לבטל בכל עת מתחתית ההודעה.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>3. OS push denied + load / save states</h2>
+<div class="grid">
+  <div>
+    <div class="cap"><b>OS denied</b> — reuse CHAT-6 hint copy + Open settings. Toggles stay usable (prefs still mute enqueue); no second soft-ask.</div>
+    <div class="phone">
+      <div class="hdr"><span class="back">‹</span><b>Notification settings</b></div>
+      <div class="body">
+        <div class="hint" data-testid="notification-settings-push-os-denied">
+          <div>Notifications were blocked for Binder. Enable them in system settings to get alerts.</div>
+          <div class="lnk" data-testid="notification-settings-open-system-settings">Open settings</div>
+        </div>
+        <span class="tid">notification-settings-push-os-denied · notification-settings-open-system-settings</span>
+        <div class="sec">Push notifications</div>
+        <div class="tg"><span>Direct / deal messages</span><div class="sw on"></div></div>
+        <div class="tg"><span>Deal updates</span><div class="sw on"></div></div>
+        <div class="tg"><span>Comments on my posts</span><div class="sw on"></div></div>
+        <div class="sec">Email announcements</div>
+        <div class="tg"><span>Product announcements</span><div class="sw"></div></div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="cap"><b>Loading</b> — full-screen spinner on first get. Empty N/A (defaults after success).</div>
+    <div class="phone short">
+      <div class="hdr"><span class="back">‹</span><b>Notification settings</b></div>
+      <div class="body">
+        <div class="spin" data-testid="notification-settings-loading"></div>
+        <div class="help" style="text-align:center">Loading…</div>
+        <span class="tid">notification-settings-loading</span>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="cap"><b>Load error + Retry</b> / offline keeps last values with banner (not redrawn exhaustively).</div>
+    <div class="phone short">
+      <div class="hdr"><span class="back">‹</span><b>Notification settings</b></div>
+      <div class="body">
+        <div class="err" data-testid="notification-settings-error">Couldn't load your notification settings.</div>
+        <div class="retry" data-testid="notification-settings-retry">Try again</div>
+        <span class="tid">notification-settings-error · notification-settings-retry</span>
+        <div class="offline" data-testid="notification-settings-offline">You're offline. Showing last known settings.</div>
+        <span class="tid">notification-settings-offline</span>
+        <div class="sec">Push notifications</div>
+        <div class="tg"><span>Direct / deal messages</span><div class="sw on"></div></div>
+        <div class="help">Save error: revert switch + shared banner + Retry (match AnalyticsToggleSection). Not a second layout.</div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="cap"><b>HE · OS denied</b></div>
+    <div class="phone" dir="rtl">
+      <div class="hdr"><span class="back">‹</span><b>הגדרות התראות</b></div>
+      <div class="body">
+        <div class="hint">
+          <div>ההתראות נחסמו ל-Binder. אפשר להפעיל בהגדרות המכשיר.</div>
+          <div class="lnk">פתיחת הגדרות</div>
+        </div>
+        <div class="sec">התראות דחיפה</div>
+        <div class="tg"><span>הודעות ישירות / עסקה</span><div class="sw on"></div></div>
+        <div class="tg"><span>עדכוני עסקה</span><div class="sw on"></div></div>
+        <div class="tg"><span>תגובות על הפוסטים שלי</span><div class="sw on"></div></div>
+        <div class="sec">הודעות באימייל</div>
+        <div class="tg"><span>הודעות מוצר</span><div class="sw"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>4. Email signup — marketing checkbox</h2>
+<div class="grid">
+  <div>
+    <div class="cap"><b>EN</b> — legal checkbox required (LEGAL-1). Marketing checkbox <b>separate</b>, unticked, never blocks Create account.</div>
+    <div class="phone">
+      <div class="body">
+        <div class="t" style="text-align:start;font-size:20px;margin:0">Create account</div>
+        <span class="lbl">Email</span><div class="field">you@example.com</div>
+        <span class="lbl">Password</span><div class="field">••••••••</div>
+        <span class="lbl">Confirm password</span><div class="field">••••••••</div>
+        <div class="chk"><span class="box on">✓</span><span>I agree to the <span class="lnk">Terms of Service</span> and <span class="lnk">Privacy Policy</span></span></div>
+        <span class="tid">signup.legal.checkbox</span>
+        <div class="chk" style="outline:2px dashed var(--gold);outline-offset:4px;border-radius:4px;padding:4px">
+          <span class="box"></span>
+          <span>Email me product announcements <span style="color:var(--muted)">(optional)</span></span>
+        </div>
+        <span class="tid">signup.emailAnnouncements.checkbox</span>
+        <div class="btn gold">Create account</div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="cap"><b>HE · RTL</b> — noun form for optional marketing line (avoids gendered “I agree”).</div>
+    <div class="phone" dir="rtl">
+      <div class="body">
+        <div class="t" style="text-align:start;font-size:20px;margin:0">יצירת חשבון</div>
+        <span class="lbl">אימייל</span><div class="field">you@example.com</div>
+        <span class="lbl">סיסמה</span><div class="field">••••••••</div>
+        <span class="lbl">אימות סיסמה</span><div class="field">••••••••</div>
+        <div class="chk"><span class="box on">✓</span><span>הסכמה ל<span class="lnk">תנאי השימוש</span> ול<span class="lnk">מדיניות הפרטיות</span></span></div>
+        <div class="chk" style="outline:2px dashed var(--gold);outline-offset:4px;border-radius:4px;padding:4px">
+          <span class="box"></span>
+          <span>קבלת הודעות מוצר באימייל <span style="color:var(--muted)">(אופציונלי)</span></span>
+        </div>
+        <span class="tid">signup.emailAnnouncements.checkbox</span>
+        <div class="btn gold">יצירת חשבון</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>5. Google first-accept — LegalAcceptanceGate</h2>
+<div class="grid">
+  <div>
+    <div class="cap"><b>EN · first accept only</b> — show marketing checkbox when email consent not yet written. Agree continues even if set fails later.</div>
+    <div class="phone">
+      <div class="body">
+        <span class="lang">עברית</span>
+        <div class="t" style="text-align:start;font-size:20px;margin:0">Before you continue</div>
+        <div class="help">Please read and accept these to use Binder.</div>
+        <div class="doc"><div><b>Terms of Service</b><small>Updated 1 Nov 2026</small></div><span class="lnk">Read</span></div>
+        <div class="doc"><div><b>Privacy Policy</b><small>Updated 1 Nov 2026</small></div><span class="lnk">Read</span></div>
+        <div class="chk" style="outline:2px dashed var(--gold);outline-offset:4px;border-radius:4px;padding:4px;margin-top:4px">
+          <span class="box"></span>
+          <span>Email me product announcements <span style="color:var(--muted)">(optional)</span></span>
+        </div>
+        <span class="tid">legal.emailAnnouncements.checkbox</span>
+        <div class="help">Not shown on later legal re-accept when prefs already exist.</div>
+        <div class="btn gold">Agree and continue</div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="cap"><b>HE · first accept</b></div>
+    <div class="phone" dir="rtl">
+      <div class="body">
+        <span class="lang">English</span>
+        <div class="t" style="text-align:start;font-size:20px;margin:0">לפני שממשיכים</div>
+        <div class="help">כדי להשתמש ב-Binder יש לקרוא ולאשר את המסמכים האלה.</div>
+        <div class="doc"><div><b>תנאי השימוש</b><small>עודכן 1 בנוב׳ 2026</small></div><span class="lnk">קריאה</span></div>
+        <div class="doc"><div><b>מדיניות הפרטיות</b><small>עודכן 1 בנוב׳ 2026</small></div><span class="lnk">קריאה</span></div>
+        <div class="chk" style="outline:2px dashed var(--gold);outline-offset:4px;border-radius:4px;padding:4px;margin-top:4px">
+          <span class="box"></span>
+          <span>קבלת הודעות מוצר באימייל <span style="color:var(--muted)">(אופציונלי)</span></span>
+        </div>
+        <span class="tid">legal.emailAnnouncements.checkbox</span>
+        <div class="btn gold">אישור והמשך</div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="cap"><b>Re-accept (version bump)</b> — no marketing checkbox; prefs already written.</div>
+    <div class="phone short">
+      <div class="body">
+        <span class="lang">עברית</span>
+        <div class="t" style="text-align:start;font-size:20px;margin:0">Before you continue</div>
+        <div class="doc"><div><b>Terms of Service</b><small>Updated 3 Nov 2026</small></div><span class="lnk">Read</span></div>
+        <div class="help">Marketing checkbox omitted — email consent already stored.</div>
+        <div class="btn gold">Agree and continue</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Proposed i18n keys</h2>
+<div class="keys"><table>
+  <tr><th>Key</th><th>en</th><th>he</th></tr>
+  <tr><td class="key">profile.notificationSettings</td><td>Notification settings</td><td dir="rtl">הגדרות התראות</td></tr>
+  <tr><td class="key">notificationSettings.title</td><td>Notification settings</td><td dir="rtl">הגדרות התראות</td></tr>
+  <tr><td class="key">notificationSettings.push.section</td><td>Push notifications</td><td dir="rtl">התראות דחיפה</td></tr>
+  <tr><td class="key">notificationSettings.push.chatMessage</td><td>Direct / deal messages</td><td dir="rtl">הודעות ישירות / עסקה</td></tr>
+  <tr><td class="key">notificationSettings.push.dealStep</td><td>Deal updates</td><td dir="rtl">עדכוני עסקה</td></tr>
+  <tr><td class="key">notificationSettings.push.postComment</td><td>Comments on my posts</td><td dir="rtl">תגובות על הפוסטים שלי</td></tr>
+  <tr><td class="key">notificationSettings.email.section</td><td>Email announcements</td><td dir="rtl">הודעות באימייל</td></tr>
+  <tr><td class="key">notificationSettings.email.label</td><td>Product announcements</td><td dir="rtl">הודעות מוצר</td></tr>
+  <tr><td class="key">notificationSettings.email.help</td><td>Occasional product news by email. Off by default. You can unsubscribe any time from a message footer.</td><td dir="rtl">חדשות מוצר מדי פעם באימייל. כבוי כברירת מחדל. אפשר לבטל בכל עת מתחתית ההודעה.</td></tr>
+  <tr><td class="key">notificationSettings.loadError</td><td>Couldn't load your notification settings.</td><td dir="rtl">לא הצלחנו לטעון את הגדרות ההתראות.</td></tr>
+  <tr><td class="key">notificationSettings.retry</td><td>Try again</td><td dir="rtl">לנסות שוב</td></tr>
+  <tr><td class="key">notificationSettings.offline</td><td>You're offline. Showing last known settings.</td><td dir="rtl">אין חיבור. מוצגות ההגדרות האחרונות שנשמרו.</td></tr>
+  <tr><td class="key">push.permissionHint.deniedBody</td><td colspan="2">(reuse CHAT-6)</td></tr>
+  <tr><td class="key">push.permissionHint.openSettings</td><td colspan="2">(reuse CHAT-6)</td></tr>
+  <tr><td class="key">signup.emailAnnouncements.checkbox</td><td>Email me product announcements (optional)</td><td dir="rtl">קבלת הודעות מוצר באימייל (אופציונלי)</td></tr>
+  <tr><td class="key">legal.emailAnnouncements.checkbox</td><td>Email me product announcements (optional)</td><td dir="rtl">קבלת הודעות מוצר באימייל (אופציונלי)</td></tr>
+</table></div>
+
+<h2>Notes for developer</h2>
+<ul class="notes">
+  <li><b>Placement:</b> Profile secondary button after Blocked users / before Support — same variant as My groups. Opens AppStack <code>NotificationSettings</code>.</li>
+  <li><b>Sections:</b> Push first, Email second. Only three push kinds (CHAT-6). No competitor extras.</li>
+  <li><b>Defaults:</b> push all on; email off. Missing prefs row = allow push / email false after backfill.</li>
+  <li><b>Toggles:</b> optimistic switch rows like <code>AnalyticsToggleSection</code>; shared save-error banner OK if cleaner than per-toggle.</li>
+  <li><b>OS denied:</b> top hint + Open settings only — reuse CHAT-6 soft-ask denial path; do not re-prompt OS from this screen.</li>
+  <li><b>Consent:</b> signup + Google first-accept checkboxes default unchecked; Create/Agree never require them; write prefs after session; failure non-blocking.</li>
+  <li><b>Out of mock:</b> unsubscribe HTML page, ops send Edge, animation timing — implementer call. Core hierarchy above is sealed.</li>
+</ul>
+
+</body>
+</html>
